@@ -93,7 +93,7 @@
                                     <!-- <button type="button" class="btn btn-primary">Add</button> -->
 
 
-                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" onclick="newuser()">
                                       Add
                                     </button>
                                         
@@ -180,18 +180,31 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" >
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
      <form>
       <div class="modal-body">
+
+  <div class="form-group row">
+    <label for="staticEmail" class="col-sm-2 col-form-label">Username</label>
+    <div class="col-sm-10">
+      <input type="text" name="name" value="" id="form-name" required class="form-control" >
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="inputPassword" class="col-sm-2 col-form-label">Email</label>
+    <div class="col-sm-10">
+      <input type="email" name="email" value=""  class="form-control" id="form-email" required>
+    </div>
+  </div>
+
+
         <input type="hidden" name="id" value="" id="form-id">
-        <input type="text" name="name" value="" id="form-name" required>
-        <input type="email" name="email" value=""  id="form-email" required>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" >Close</button>
         <button type="button" class="btn btn-primary" onclick="editsaveuser()" data-dismiss="modal">Save changes</button>
         <!-- <input type="save changes" class="btn btn-primary" onclick="editsaveuser()" data-dismiss="modal" /> -->
       </div>
@@ -271,6 +284,11 @@
         }
     }
 
+    function newuser(){
+             $('#form-email').val('');
+        $('#form-name').val('');
+        $('#form-id').val('');
+    }
 
 
     function edituser(){
@@ -287,9 +305,41 @@
         var form_id = $('#form-id').val();
 
         if (form_id) {
+
+            fetch('https://jsonplaceholder.typicode.com/users/'+val, {
+              method: 'PUT',
+              body: JSON.stringify({
+                id: form_id,
+                title: form_name,
+                body: form_email,
+              }),
+              headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+              },
+            })
+              .then((response) => response.json())
+              .then((json) => console.log(json))
+
+
             obj['users'][total_checks[0]]['username'] = form_name;
             obj['users'][total_checks[0]]['email'] = form_email;
+            
         }else if(form_name && form_email){
+
+            fetch('https://jsonplaceholder.typicode.com/users', {
+              method: 'POST',
+              body: JSON.stringify({
+                username: form_name,
+                email: form_email,
+              }),
+              headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+              },
+            })
+              .then((response) => response.json())
+              .then((json) => console.log(json))
+
+
             obj['users'].push( {
                             id : next_id,
                             username : form_name,
